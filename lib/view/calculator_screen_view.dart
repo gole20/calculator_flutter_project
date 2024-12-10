@@ -138,7 +138,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           fontWeight: FontWeight.bold,
                           color: int.tryParse(lstSymbols[index]) != null
                               ? Colors.black
-                              : Colors.red,
+                              : Colors.orange,
                         ),
                       ),
                     );
