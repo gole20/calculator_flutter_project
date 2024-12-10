@@ -12,7 +12,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   List<String> lstSymbols = [
     "C",
     "*",
-    "/",
+    "÷",
     "<-",
     "1",
     "2",
@@ -33,7 +33,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   ];
 
   final _key = GlobalKey<FormState>();
-  String _operation = '';
+  String operator = '';
   double first = 0;
   double second = 0;
 
@@ -43,7 +43,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _textController.clear();
         first = 0;
         second = 0;
-        _operation = '';
+        operator = '';
       } else if (value == "<-") {
         _textController.text =
             _textController.text.substring(0, _textController.text.length - 1);
@@ -51,15 +51,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         try {
           second = double.tryParse(_textController.text) ?? 0;
           _textController.text =
-              _evaluateExpression(first, second, _operation).toString();
+              _evaluateExpression(first, second, operator).toString();
           first = double.tryParse(_textController.text) ?? 0;
-          _operation = '';
+          operator = '';
         } catch (e) {
           _textController.text = "Error";
         }
-      } else if (value == "+" || value == "-" || value == "*") {
+      } else if (value == "+" ||
+          value == "-" ||
+          value == "*" ||
+          value == "÷" ||
+          value == "%") {
         first = double.tryParse(_textController.text) ?? 0;
-        _operation = value;
+        operator = value;
         _textController.clear();
       } else {
         _textController.text += value;
@@ -75,6 +79,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         return first - second;
       case "*":
         return first * second;
+      case "÷":
+        return first / second; // Adjusted to match the correct order for division
+      case "%":
+        return first % second;
       default:
         return second;
     }
@@ -104,7 +112,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ),
               ),
               const SizedBox(
-                height: 8,
+                height: 32,
               ),
               Expanded(
                 child: GridView.builder(
@@ -117,7 +125,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   itemBuilder: (context, index) {
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: Colors.yellow[100],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(0),
                         ),
@@ -125,9 +133,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       onPressed: () => onButtonPressed(lstSymbols[index]),
                       child: Text(
                         lstSymbols[index],
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: int.tryParse(lstSymbols[index]) != null
+                              ? Colors.black
+                              : Colors.red,
                         ),
                       ),
                     );
